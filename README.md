@@ -1,14 +1,9 @@
 # Full-Stack Portfolio Project
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/YOUR-BADGE-ID/deploy-status)](https://app.netlify.com/sites/YOUR-SITE-NAME/deploys)
-[![GitHub tag](https://img.shields.io/github/v/tag/YOUR-USERNAME/YOUR-REPO?label=version&color=6366f1)](https://github.com/YOUR-USERNAME/YOUR-REPO/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE)
 
 A complete, production-ready portfolio of four interconnected web projects built over a structured 60-day development plan. Each project targets a distinct skill area — from semantic HTML/CSS foundations to async JavaScript, REST API integration, offline-first PWA architecture, and professional deployment.
 
-**Live Demo:** [https://YOUR-SITE-NAME.netlify.app](https://YOUR-SITE-NAME.netlify.app)
-
-**Demo Video:** [Watch the 7-minute walkthrough on YouTube](https://youtube.com/YOUR-VIDEO-LINK)
 
 ---
 

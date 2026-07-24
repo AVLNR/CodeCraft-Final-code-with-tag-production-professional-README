@@ -9,12 +9,12 @@ A complete, production-ready portfolio of four interconnected web projects built
 
 ## Projects Overview
 
-| # | Project | Key Tech | Live Link |
+| #https://avlnr.github.io/3-mini-apps-Weather-Movie-Quote-User-integrated-into-main-site/ | Project | Key Tech | Live Link |
 |---|---------|----------|-----------|
-| 1 | Aether Studio — Creative Agency Website | HTML5, CSS3, Vanilla JS | [View](https://YOUR-SITE-NAME.netlify.app/Task-1/) |
-| 2 | JavaScript Showcase Hub — 12 UI Components | ES6+, CSS Variables, LocalStorage | [View](https://YOUR-SITE-NAME.netlify.app/Task-II/) |
-| 3 | API Studio — Interactive REST API Dashboard | Async/Await, Fetch, AbortController | [View](https://YOUR-SITE-NAME.netlify.app/Task-III/) |
-| 4 | Veloce — Advanced Expense Tracker PWA | IndexedDB, Service Workers, Chart.js | [View](https://YOUR-SITE-NAME.netlify.app/Task-4/) |
+| 1 | Aether Studio — Creative Agency Website | HTML5, CSS3, Vanilla JS | [View](https://avlnr.github.io/Aether-Studio/) |
+| 2 | JavaScript Showcase Hub — 12 UI Components | ES6+, CSS Variables, LocalStorage | [View](https://avlnr.github.io/Website-with-10-interactive-JS-components/) |
+| 3 | API Studio — Interactive REST API Dashboard | Async/Await, Fetch, AbortController | [View]() |
+| 4 | Veloce — Advanced Expense Tracker PWA | IndexedDB, Service Workers, Chart.js | [View](https://avlnr.github.io/CRUD-app-Expense-Tracker-Notes-Recipe-advanced-features/) |
 
 ---
 
@@ -269,10 +269,6 @@ This project is open-source under the [MIT License](LICENSE).
 
 ---
 
-## Author
 
-Built as part of a structured 60-day portfolio development plan.
 
-**GitHub:** [https://github.com/YOUR-USERNAME](https://github.com/YOUR-USERNAME)
-**LinkedIn:** [https://linkedin.com/in/YOUR-PROFILE](https://linkedin.com/in/YOUR-PROFILE)
-**Live Portfolio:** [https://YOUR-SITE-NAME.netlify.app](https://YOUR-SITE-NAME.netlify.app)
+

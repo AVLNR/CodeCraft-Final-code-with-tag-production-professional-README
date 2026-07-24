@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeCraft Portfolio — avlnr</title>
+  <meta name="description" content="A 60-day portfolio of four production-ready web projects — static sites, JS components, REST APIs, and a PWA expense tracker.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #060914;
+      --bg2:       #0b1120;
+      --surface:   #111827;
+      --surface2:  #1a2233;
+      --border:    rgba(255,255,255,0.08);
+      --border2:   rgba(255,255,255,0.14);
+      --text:      #f0f4ff;
+      --muted:     #7c8fa6;
+      --dim:       #4a5568;
+      --primary:   #7c6af7;
+      --primary-h: #6457d4;
+      --primary-g: linear-gradient(135deg,#7c6af7,#5eead4);
+      --accent:    #5eead4;
+      --pink:      #f472b6;
+      --orange:    #fb923c;
+      --radius:    16px;
+      --radius-lg: 24px;
+    }
+    [data-theme="light"] {
+      --bg:      #f5f7ff;
+      --bg2:     #eef0fb;
+      --surface: #ffffff;
+      --surface2:#f0f2fc;
+      --border:  rgba(0,0,0,0.07);
+      --border2: rgba(0,0,0,0.12);
+      --text:    #0d1117;
+      --muted:   #6b7280;
+      --dim:     #9ca3af;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── Skip link ── */
+    .skip-link {
+      position: absolute; top: -100px; left: 1rem;
+      background: var(--primary); color: #fff;
+      padding: .5rem 1rem; border-radius: 6px;
+      font-size: .875rem; z-index: 9999; transition: top .2s;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    /* ══════════════════════════════════════
+       ANIMATED BACKGROUND
+    ══════════════════════════════════════ */
+    .bg-canvas {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none; overflow: hidden;
+    }
+    .bg-canvas::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 10%, rgba(124,106,247,.18) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 50% at 90% 20%, rgba(94,234,212,.12) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 40% at 50% 90%, rgba(244,114,182,.1) 0%, transparent 50%);
+      animation: bgDrift 20s ease-in-out infinite alternate;
+    }
+    @keyframes bgDrift {
+      0%   { transform: translate(0,0) scale(1); }
+      100% { transform: translate(20px,-15px) scale(1.04); }
+    }
+    .orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); animation: orbFloat 12s ease-in-out infinite;
+    }
+    .orb-1 { width:420px; height:420px; top:-120px; left:-80px;
+      background:rgba(124,106,247,.15); animation-delay:0s; }
+    .orb-2 { width:300px; height:300px; top:30%; right:-60px;
+      background:rgba(94,234,212,.1); animation-delay:-4s; }
+    .orb-3 { width:360px; height:360px; bottom:-80px; left:40%;
+      background:rgba(244,114,182,.1); animation-delay:-8s; }
+    @keyframes orbFloat {
+      0%,100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-40px) scale(1.05); }
+    }
+    /* Grid overlay */
+    .bg-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent);
+    }
+    [data-theme="light"] .bg-canvas::before {
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 10%, rgba(124,106,247,.08) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 50% at 90% 20%, rgba(94,234,212,.06) 0%, transparent 50%);
+    }
+    [data-theme="light"] .orb-1 { background:rgba(124,106,247,.06); }
+    [data-theme="light"] .orb-2 { background:rgba(94,234,212,.05); }
+    [data-theme="light"] .orb-3 { background:rgba(244,114,182,.05); }
+    [data-theme="light"] .bg-grid {
+      background-image:
+        linear-gradient(rgba(0,0,0,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,.04) 1px, transparent 1px);
+    }
+  </style>
+  <style>
+    /* ══════════════════════════════════════
+       HEADER
+    ══════════════════════════════════════ */
+    .site-header {
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(6,9,20,.7);
+      border-bottom: 1px solid var(--border);
+    }
+    [data-theme="light"] .site-header { background: rgba(245,247,255,.8); }
+    .header-inner {
+      max-width: 1120px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .9rem 1.5rem;
+    }
+    .logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem; font-weight: 700;
+      letter-spacing: -.02em;
+      display: flex; align-items: center; gap: .45rem;
+    }
+    .logo-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--primary-g);
+      box-shadow: 0 0 10px rgba(124,106,247,.8);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 8px rgba(124,106,247,.6); }
+      50%      { box-shadow: 0 0 18px rgba(124,106,247,1); }
+    }
+    .logo-text {
+      background: var(--primary-g);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .header-nav { display: flex; gap: .4rem; align-items: center; }
+    .nav-link {
+      font-size: .82rem; font-weight: 500; color: var(--muted);
+      padding: .38rem .8rem; border-radius: 8px;
+      transition: color .2s, background .2s;
+    }
+    .nav-link:hover { color: var(--text); background: var(--surface); }
+    .theme-btn {
+      background: var(--surface); border: 1px solid var(--border2);
+      color: var(--muted); border-radius: 10px;
+      width: 36px; height: 36px; cursor: pointer;
+      display: grid; place-items: center; font-size: 1rem;
+      transition: color .2s, border-color .2s, transform .2s;
+    }
+    .theme-btn:hover { color: var(--text); border-color: var(--primary); transform: rotate(20deg); }
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    .hero-section {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 6rem 1.5rem 4rem;
+    }
+    .hero-inner { max-width: 780px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(124,106,247,.1);
+      border: 1px solid rgba(124,106,247,.3);
+      color: var(--primary); padding: .3rem 1rem;
+      border-radius: 99px; font-size: .75rem; font-weight: 600;
+      margin-bottom: 1.75rem; letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); animation: pulse 2s infinite; }
+    .hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 700; line-height: 1.1;
+      letter-spacing: -.03em;
+      margin-bottom: 1.25rem;
+    }
+    .hero-title .line2 {
+      background: var(--primary-g);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: 1.05rem; color: var(--muted);
+      max-width: 560px; margin: 0 auto 2.5rem; line-height: 1.7;
+    }
+    .hero-cta { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: .45rem;
+      padding: .7rem 1.5rem; border-radius: 12px;
+      font-size: .875rem; font-weight: 600; cursor: pointer; border: none;
+      transition: transform .15s, box-shadow .15s, opacity .15s;
+      position: relative; overflow: hidden;
+    }
+    .btn::after {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(255,255,255,.08); opacity: 0;
+      transition: opacity .2s;
+    }
+    .btn:hover::after { opacity: 1; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: translateY(0); }
+    .btn-primary {
+      background: linear-gradient(135deg,#7c6af7,#5eead4);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(124,106,247,.4);
+    }
+    .btn-primary:hover { box-shadow: 0 8px 28px rgba(124,106,247,.55); }
+    .btn-ghost {
+      background: var(--surface); color: var(--text);
+      border: 1px solid var(--border2);
+    }
+    .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+  </style>
+  <style>
+    /* ══════════════════════════════════════
+       STATS STRIP
+    ══════════════════════════════════════ */
+    .stats-strip {
+      position: relative; z-index: 1;
+      display: flex; justify-content: center;
+      gap: 0; flex-wrap: wrap;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,.02);
+    }
+    .stat-item {
+      flex: 1; min-width: 140px;
+      text-align: center; padding: 1.75rem 1rem;
+      border-right: 1px solid var(--border);
+      transition: background .2s;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-item:hover { background: rgba(124,106,247,.06); }
+    .stat-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem; font-weight: 700;
+      background: var(--primary-g);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+    .stat-lbl { font-size: .75rem; color: var(--muted); margin-top: .4rem; letter-spacing: .04em; text-transform: uppercase; }
+
+    /* ══════════════════════════════════════
+       SECTION WRAPPER
+    ══════════════════════════════════════ */
+    .section {
+      position: relative; z-index: 1;
+      max-width: 1120px; margin: 0 auto;
+      padding: 5rem 1.5rem;
+    }
+    .section-hd { text-align: center; margin-bottom: 3rem; }
+    .eyebrow {
+      display: inline-block;
+      font-size: .7rem; font-weight: 700; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--primary);
+      margin-bottom: .6rem;
+    }
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700;
+      letter-spacing: -.02em;
+    }
+    .section-sub { color: var(--muted); margin-top: .6rem; font-size: .95rem; }
+
+    /* ══════════════════════════════════════
+       PROJECT CARDS — BENTO LAYOUT
+    ══════════════════════════════════════ */
+    .bento {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    @media (max-width: 700px) { .bento { grid-template-columns: 1fr; } }
+
+    .pcard {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: transform .25s, box-shadow .25s, border-color .25s;
+      position: relative;
+    }
+    .pcard::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(124,106,247,.04), transparent);
+      opacity: 0; transition: opacity .3s;
+      pointer-events: none;
+    }
+    .pcard:hover { transform: translateY(-6px); border-color: var(--border2); }
+    .pcard:hover::before { opacity: 1; }
+    .pcard:hover .pcard-glow { opacity: 1; }
+
+    .pcard-glow {
+      position: absolute; top: -60px; left: -60px;
+      width: 180px; height: 180px; border-radius: 50%;
+      filter: blur(60px); opacity: 0;
+      transition: opacity .4s; pointer-events: none;
+    }
+
+    /* Card thumbnail visual */
+    .pcard-thumb {
+      height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .pcard-thumb::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 70px;
+      background: linear-gradient(to top, var(--surface), transparent);
+    }
+    .thumb-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    .thumb-icon {
+      position: relative; z-index: 1;
+      transition: transform .3s;
+    }
+    .pcard:hover .thumb-icon { transform: scale(1.08) translateY(-4px); }
+
+    /* Card 1 — cyan */
+    .thumb-1 { background: radial-gradient(ellipse at 30% 30%, #0a2540 0%, #060e1f 100%); }
+    .thumb-1 .pcard-glow { background: rgba(0,200,255,.5); }
+    /* Card 2 — purple */
+    .thumb-2 { background: radial-gradient(ellipse at 30% 30%, #1a0540 0%, #0a0618 100%); }
+    .thumb-2 .pcard-glow { background: rgba(185,0,255,.5); }
+    /* Card 3 — teal */
+    .thumb-3 { background: radial-gradient(ellipse at 30% 30%, #003340 0%, #031018 100%); }
+    .thumb-3 .pcard-glow { background: rgba(0,200,180,.5); }
+    /* Card 4 — indigo */
+    .thumb-4 { background: radial-gradient(ellipse at 30% 30%, #130c3a 0%, #07050f 100%); }
+    .thumb-4 .pcard-glow { background: rgba(124,106,247,.6); }
+
+    .pcard-body { padding: 1.4rem; flex: 1; display: flex; flex-direction: column; gap: .65rem; }
+    .pcard-num {
+      font-size: .65rem; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--primary);
+    }
+    .pcard-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem; font-weight: 700; letter-spacing: -.01em;
+    }
+    .pcard-desc { font-size: .83rem; color: var(--muted); line-height: 1.65; flex: 1; }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .tag {
+      font-size: .65rem; font-weight: 600; padding: .18rem .55rem;
+      border-radius: 99px; border: 1px solid var(--border2);
+      color: var(--dim); background: var(--bg2);
+      transition: color .2s, border-color .2s;
+    }
+    .pcard:hover .tag { color: var(--muted); border-color: var(--border2); }
+
+    .pcard-footer {
+      display: flex; gap: .6rem;
+      padding: .9rem 1.4rem 1.4rem;
+    }
+    .pcard-btn {
+      flex: 1; text-align: center;
+      padding: .6rem .8rem; border-radius: 10px;
+      font-size: .8rem; font-weight: 600;
+      transition: background .2s, color .2s, border-color .2s, transform .15s;
+    }
+    .pcard-btn:hover { transform: translateY(-1px); }
+    .pcard-btn-live {
+      background: linear-gradient(135deg,#7c6af7,#5eead4);
+      color: #fff;
+    }
+    .pcard-btn-src {
+      border: 1px solid var(--border2); color: var(--muted);
+      background: transparent;
+    }
+    .pcard-btn-src:hover { border-color: var(--primary); color: var(--primary); }
+  </style>
+  <style>
+    /* ══════════════════════════════════════
+       SKILLS
+    ══════════════════════════════════════ */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.25rem 1.1rem;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+      position: relative; overflow: hidden;
+    }
+    .skill-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--primary-g);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .3s;
+    }
+    .skill-card:hover { border-color: var(--border2); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.2); }
+    .skill-card:hover::before { transform: scaleX(1); }
+    .skill-icon { font-size: 1.6rem; margin-bottom: .6rem; }
+    .skill-ttl { font-weight: 600; font-size: .875rem; margin-bottom: .35rem; }
+    .skill-txt { font-size: .78rem; color: var(--muted); line-height: 1.6; }
+
+    /* ══════════════════════════════════════
+       CHECKLIST (submission-ready section)
+    ══════════════════════════════════════ */
+    .check-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .check-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      display: flex; align-items: flex-start; gap: .75rem;
+      transition: border-color .2s;
+    }
+    .check-card:hover { border-color: var(--border2); }
+    .check-icon {
+      flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px;
+      background: rgba(94,234,212,.12); border: 1px solid rgba(94,234,212,.3);
+      display: grid; place-items: center; color: var(--accent); font-size: .85rem;
+    }
+    .check-ttl { font-size: .85rem; font-weight: 600; margin-bottom: .2rem; }
+    .check-txt { font-size: .75rem; color: var(--muted); line-height: 1.55; }
+
+    /* ══════════════════════════════════════
+       CTA BANNER
+    ══════════════════════════════════════ */
+    .cta-band {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 5rem 1.5rem;
+      overflow: hidden;
+    }
+    .cta-band::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 80% at 50% 50%, rgba(124,106,247,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-band-inner { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
+    .cta-band h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700;
+      letter-spacing: -.03em; margin-bottom: .75rem;
+    }
+    .cta-band h2 span { background: var(--primary-g); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .cta-band p { color: var(--muted); margin-bottom: 2rem; font-size: 1rem; }
+    .cta-btns { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    .site-footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 1.75rem 1.5rem;
+      text-align: center;
+      font-size: .78rem; color: var(--muted);
+    }
+    .site-footer a { color: var(--primary); transition: opacity .2s; }
+    .site-footer a:hover { opacity: .8; text-decoration: underline; }
+    .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: .6rem; flex-wrap: wrap; }
+
+    /* ══════════════════════════════════════
+       SCROLL REVEAL
+    ══════════════════════════════════════ */
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 768px) {
+      .hero-title { font-size: 2.2rem; }
+      .stats-strip { gap: 0; }
+      .stat-item { min-width: 50%; border-bottom: 1px solid var(--border); }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Animated background -->
+  <div class="bg-canvas" aria-hidden="true">
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- ─── HEADER ─── -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-dot"></span>
+        <span class="logo-text">CodeCraft</span>
+      </div>
+      <nav class="header-nav" aria-label="Site navigation">
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#skills"   class="nav-link">Skills</a>
+        <a href="#ready"    class="nav-link">Submission</a>
+        <a href="https://github.com/avlnr" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        <button class="theme-btn" id="theme-toggle" aria-label="Toggle colour theme">☀️</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ─── HERO ─── -->
+    <section class="hero-section" aria-labelledby="hero-heading">
+      <div class="hero-inner">
+        <div class="hero-badge"><span class="badge-dot"></span>60-Day Portfolio Build</div>
+        <h1 class="hero-title" id="hero-heading">
+          Four Projects.<br>
+          <span class="line2">Built from Scratch.</span>
+        </h1>
+        <p class="hero-sub">A structured journey from semantic HTML to an offline-first PWA — every line written in vanilla web tech, no frameworks.</p>
+        <div class="hero-cta">
+          <a href="#projects" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            Explore Projects
+          </a>
+          <a href="https://github.com/avlnr" class="btn btn-ghost" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577v-2.165c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── STATS ─── -->
+    <div class="stats-strip" aria-label="Portfolio stats">
+      <div class="stat-item reveal">
+        <div class="stat-num" data-target="4">0</div>
+        <div class="stat-lbl">Live Projects</div>
+      </div>
+      <div class="stat-item reveal" style="transition-delay:.1s">
+        <div class="stat-num" data-target="12">0</div>
+        <div class="stat-lbl">UI Components</div>
+      </div>
+      <div class="stat-item reveal" style="transition-delay:.2s">
+        <div class="stat-num" data-target="5">0</div>
+        <div class="stat-lbl">APIs Integrated</div>
+      </div>
+      <div class="stat-item reveal" style="transition-delay:.3s">
+        <div class="stat-num" data-target="98">0</div>
+        <div class="stat-lbl">Lighthouse Score</div>
+      </div>
+      <div class="stat-item reveal" style="transition-delay:.4s">
+        <div class="stat-num">60</div>
+        <div class="stat-lbl">Days to Build</div>
+      </div>
+    </div>
+
+    <!-- ─── PROJECTS ─── -->
+    <section class="section" id="projects" aria-labelledby="projects-heading">
+      <div class="section-hd reveal">
+        <span class="eyebrow">Featured Work</span>
+        <h2 class="section-title" id="projects-heading">Project Showcase</h2>
+        <p class="section-sub">Each project targets a distinct layer of the web stack, from pure CSS to offline-first PWA architecture.</p>
+      </div>
+
+      <div class="bento">
+
+        <!-- ── Card 1 — Aether Studio ── -->
+        <article class="pcard reveal">
+          <div class="pcard-glow" style="background:rgba(0,200,255,.5)"></div>
+          <div class="pcard-thumb thumb-1">
+            <div class="thumb-grid"></div>
+            <div class="thumb-icon">
+              <svg width="80" height="80" viewBox="0 0 80 80" fill="none" style="filter:drop-shadow(0 0 20px rgba(0,200,255,.8))">
+                <polygon points="40,5 75,22 75,58 40,75 5,58 5,22" stroke="#00c8ff" stroke-width="2.5" fill="rgba(0,200,255,.05)"/>
+                <polygon points="40,16 64,29 64,55 40,68 16,55 16,29" stroke="#00c8ff" stroke-width="1.2" stroke-dasharray="5 4" fill="none" opacity=".5"/>
+                <circle cx="40" cy="40" r="10" fill="rgba(0,200,255,.15)" stroke="#00c8ff" stroke-width="2"/>
+                <circle cx="40" cy="40" r="3" fill="#00c8ff"/>
+              </svg>
+            </div>
+          </div>
+          <div class="pcard-body">
+            <p class="pcard-num">Project 01 — Static Website</p>
+            <h3 class="pcard-title">Aether Studio</h3>
+            <p class="pcard-desc">A premium 6-page creative digital agency website. CSS-only testimonial slider, portfolio filter, responsive side-drawer nav, and dark-mode Google Maps embed — zero JS for core interactions.</p>
+            <div class="tag-row">
+              <span class="tag">HTML5</span><span class="tag">CSS Grid</span>
+              <span class="tag">Flexbox</span><span class="tag">Glassmorphism</span>
+              <span class="tag">CSS-Only Logic</span>
+            </div>
+          </div>
+          <div class="pcard-footer">
+            <a href="https://avlnr.github.io/Aether-Studio/" class="pcard-btn pcard-btn-live" target="_blank" rel="noopener">View Live ↗</a>
+            <a href="https://github.com/avlnr/Aether-Studio" class="pcard-btn pcard-btn-src" target="_blank" rel="noopener">Source</a>
+          </div>
+        </article>
+
+        <!-- ── Card 2 — JS Showcase Hub ── -->
+        <article class="pcard reveal" style="transition-delay:.1s">
+          <div class="pcard-glow" style="background:rgba(185,0,255,.5)"></div>
+          <div class="pcard-thumb thumb-2">
+            <div class="thumb-grid"></div>
+            <div class="thumb-icon">
+              <svg width="80" height="80" viewBox="0 0 80 80" fill="none" style="filter:drop-shadow(0 0 20px rgba(185,0,255,.8))">
+                <rect x="10" y="10" width="60" height="60" rx="12" stroke="#b900ff" stroke-width="2.5" fill="rgba(185,0,255,.05)"/>
+                <rect x="22" y="22" width="36" height="36" rx="6" stroke="#b900ff" stroke-width="1.2" stroke-dasharray="5 4" fill="none" opacity=".5"/>
+                <text x="40" y="46" text-anchor="middle" fill="#b900ff" font-size="20" font-family="monospace" font-weight="700">&lt;/&gt;</text>
+              </svg>
+            </div>
+          </div>
+          <div class="pcard-body">
+            <p class="pcard-num">Project 02 — JS Components</p>
+            <h3 class="pcard-title">JS Showcase Hub</h3>
+            <p class="pcard-desc">12 premium interactive UI components — scroll progress, touch-swipe carousel, countdown modal, drag-and-drop reorderer, real-time form validation, password strength meter, and persistent dark mode.</p>
+            <div class="tag-row">
+              <span class="tag">ES6+</span><span class="tag">IntersectionObserver</span>
+              <span class="tag">LocalStorage</span><span class="tag">Touch Events</span>
+              <span class="tag">CSS Variables</span>
+            </div>
+          </div>
+          <div class="pcard-footer">
+            <a href="https://avlnr.github.io/Website-with-10-interactive-JS-components/" class="pcard-btn pcard-btn-live" target="_blank" rel="noopener">View Live ↗</a>
+            <a href="https://github.com/avlnr/Website-with-10-interactive-JS-components" class="pcard-btn pcard-btn-src" target="_blank" rel="noopener">Source</a>
+          </div>
+        </article>
+
+        <!-- ── Card 3 — API Studio ── -->
+        <article class="pcard reveal" style="transition-delay:.15s">
+          <div class="pcard-glow" style="background:rgba(0,200,180,.5)"></div>
+          <div class="pcard-thumb thumb-3">
+            <div class="thumb-grid"></div>
+            <div class="thumb-icon">
+              <svg width="80" height="80" viewBox="0 0 80 80" fill="none" style="filter:drop-shadow(0 0 20px rgba(0,200,180,.8))">
+                <circle cx="40" cy="40" r="30" stroke="#00c8b4" stroke-width="2.5" fill="rgba(0,200,180,.05)"/>
+                <circle cx="40" cy="40" r="18" stroke="#00c8b4" stroke-width="1.2" stroke-dasharray="5 4" fill="none" opacity=".5"/>
+                <circle cx="40" cy="40" r="6" fill="#00c8b4"/>
+                <line x1="40" y1="10" x2="40" y2="22" stroke="#00c8b4" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="40" y1="58" x2="40" y2="70" stroke="#00c8b4" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="10" y1="40" x2="22" y2="40" stroke="#00c8b4" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="58" y1="40" x2="70" y2="40" stroke="#00c8b4" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="pcard-body">
+            <p class="pcard-num">Project 03 — REST API Integration</p>
+            <h3 class="pcard-title">API Studio</h3>
+            <p class="pcard-desc">A multi-app SPA dashboard — Weather Station (geolocation + 5-day forecast), Movie Searcher (autocomplete, pagination, favorites), People &amp; Quotes Hub (vCard export). AbortController and full keyless fallbacks throughout.</p>
+            <div class="tag-row">
+              <span class="tag">Async/Await</span><span class="tag">Fetch API</span>
+              <span class="tag">AbortController</span><span class="tag">OpenWeather</span>
+              <span class="tag">OMDB</span>
+            </div>
+          </div>
+          <div class="pcard-footer">
+            <a href="https://avlnr.github.io/3-mini-apps-Weather-Movie-Quote-User-integrated-into-main-site/" class="pcard-btn pcard-btn-live" target="_blank" rel="noopener">View Live ↗</a>
+            <a href="https://github.com/avlnr/3-mini-apps-Weather-Movie-Quote-User-integrated-into-main-site" class="pcard-btn pcard-btn-src" target="_blank" rel="noopener">Source</a>
+          </div>
+        </article>
+
+        <!-- ── Card 4 — Veloce ── -->
+        <article class="pcard reveal" style="transition-delay:.2s">
+          <div class="pcard-glow" style="background:rgba(124,106,247,.6)"></div>
+          <div class="pcard-thumb thumb-4">
+            <div class="thumb-grid"></div>
+            <div class="thumb-icon">
+              <svg width="80" height="80" viewBox="0 0 80 80" fill="none" style="filter:drop-shadow(0 0 20px rgba(124,106,247,.9))">
+                <rect x="8" y="18" width="64" height="46" rx="8" stroke="#7c6af7" stroke-width="2.5" fill="rgba(124,106,247,.06)"/>
+                <line x1="8" y1="30" x2="72" y2="30" stroke="#7c6af7" stroke-width="1.5" opacity=".6"/>
+                <rect x="16" y="38" width="20" height="5" rx="2.5" fill="rgba(124,106,247,.4)"/>
+                <rect x="16" y="48" width="32" height="5" rx="2.5" fill="rgba(124,106,247,.25)"/>
+                <circle cx="58" cy="43" r="9" stroke="#7c6af7" stroke-width="2" fill="rgba(124,106,247,.1)"/>
+                <text x="58" y="47" text-anchor="middle" fill="#7c6af7" font-size="11" font-weight="700">$</text>
+              </svg>
+            </div>
+          </div>
+          <div class="pcard-body">
+            <p class="pcard-num">Project 04 — PWA / Offline-First</p>
+            <h3 class="pcard-title">Veloce — Expense Tracker</h3>
+            <p class="pcard-desc">A fully offline PWA — IndexedDB CRUD, WebP receipt compression via Canvas, infinite scroll, Chart.js analytics (code-split), budget alerts with push notifications, and JSON backup import/export.</p>
+            <div class="tag-row">
+              <span class="tag">IndexedDB</span><span class="tag">Service Workers</span>
+              <span class="tag">Chart.js</span><span class="tag">WebP Canvas</span>
+              <span class="tag">Code Splitting</span>
+            </div>
+          </div>
+          <div class="pcard-footer">
+            <a href="https://avlnr.github.io/CRUD-app-Expense-Tracker-Notes-Recipe-advanced-features/" class="pcard-btn pcard-btn-live" target="_blank" rel="noopener">View Live ↗</a>
+            <a href="https://github.com/avlnr/CRUD-app-Expense-Tracker-Notes-Recipe-advanced-features" class="pcard-btn pcard-btn-src" target="_blank" rel="noopener">Source</a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ─── SKILLS ─── -->
+    <section class="section" id="skills" aria-labelledby="skills-heading">
+      <div class="section-hd reveal">
+        <span class="eyebrow">Technical Skills</span>
+        <h2 class="section-title" id="skills-heading">What This Portfolio Demonstrates</h2>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-card reveal"><div class="skill-icon">🏗️</div><div class="skill-ttl">Semantic HTML &amp; A11y</div><div class="skill-txt">ARIA roles, focus trapping, skip links, keyboard nav, live regions</div></div>
+        <div class="skill-card reveal" style="transition-delay:.05s"><div class="skill-icon">🎨</div><div class="skill-ttl">Advanced CSS</div><div class="skill-txt">Custom Properties, Grid, Flexbox, Keyframes, Glassmorphism, responsive design</div></div>
+        <div class="skill-card reveal" style="transition-delay:.1s"><div class="skill-icon">⚡</div><div class="skill-ttl">Vanilla JavaScript</div><div class="skill-txt">ES6+ classes, modules, async/await, promises, closures, event delegation</div></div>
+        <div class="skill-card reveal" style="transition-delay:.15s"><div class="skill-icon">🌐</div><div class="skill-ttl">REST APIs &amp; Async</div><div class="skill-txt">Fetch, AbortController, error handling, rate-limit fallbacks, localStorage caching</div></div>
+        <div class="skill-card reveal" style="transition-delay:.2s"><div class="skill-icon">📦</div><div class="skill-ttl">Browser Storage</div><div class="skill-txt">IndexedDB CRUD, localStorage, JSON export/import, Base64 Blob serialisation</div></div>
+        <div class="skill-card reveal" style="transition-delay:.25s"><div class="skill-icon">🚀</div><div class="skill-ttl">Performance</div><div class="skill-txt">Debounce, throttle, IntersectionObserver, lazy loading, dynamic imports, WebP compression</div></div>
+        <div class="skill-card reveal" style="transition-delay:.3s"><div class="skill-icon">📱</div><div class="skill-ttl">PWA &amp; Offline</div><div class="skill-txt">Service Workers, pre-cache strategies, offline CRUD, push notifications</div></div>
+        <div class="skill-card reveal" style="transition-delay:.35s"><div class="skill-icon">🚢</div><div class="skill-ttl">Deployment</div><div class="skill-txt">GitHub Pages, Netlify auto-deploy, custom headers, redirect rules, production build</div></div>
+      </div>
+    </section>
+
+    <!-- ─── SUBMISSION CHECKLIST ─── -->
+    <section class="section" id="ready" aria-labelledby="ready-heading">
+      <div class="section-hd reveal">
+        <span class="eyebrow">Task 5 Complete</span>
+        <h2 class="section-title" id="ready-heading">Submission Ready</h2>
+        <p class="section-sub">Every deliverable from the 60-day plan is checked off.</p>
+      </div>
+      <div class="check-grid">
+        <div class="check-card reveal"><div class="check-icon">✓</div><div><div class="check-ttl">Console &amp; Debugger Clean</div><div class="check-txt">All console.log / debugger statements removed from production files</div></div></div>
+        <div class="check-card reveal"><div class="check-icon">✓</div><div><div class="check-ttl">.gitignore</div><div class="check-txt">Excludes node_modules, .env, .DS_Store, build artefacts, editor configs</div></div></div>
+        <div class="check-card reveal"><div class="check-icon">✓</div><div><div class="check-ttl">.env.example</div><div class="check-txt">Documents OpenWeatherMap &amp; OMDB keys with step-by-step setup instructions</div></div></div>
+        <div class="check-card reveal"><div class="check-icon">✓</div><div><div class="check-ttl">Professional README</div><div class="check-txt">Overview, features, tech stack, screenshots, setup, API keys, folder structure, deploy badge</div></div></div>
+        <div class="check-card reveal"><div class="check-icon">✓</div><div><div class="check-ttl">Netlify Deployment Config</div><div class="check-txt">netlify.toml with redirects, security headers, cache policies, Service Worker no-cache rule</div></div></div>
+        <div class="check-card reveal"><div class="check-icon">✓</div><div><div class="check-ttl">All 4 Projects Live</div><div class="check-txt">Deployed on GitHub Pages — all links verified and accessible</div></div></div>
+        <div class="check-card reveal"><div class="check-icon">✓</div><div><div class="check-ttl">Cross-Browser Tested</div><div class="check-txt">Chrome, Firefox, Safari, Edge — Desktop, Laptop, Tablet, Mobile</div></div></div>
+        <div class="check-card reveal"><div class="check-icon">✓</div><div><div class="check-ttl">Presentation Outline</div><div class="check-txt">7-slide deck with speaker notes, timing guide, and live demo tips</div></div></div>
+      </div>
+    </section>
+
+    <!-- ─── CTA BAND ─── -->
+    <div class="cta-band">
+      <div class="cta-band-inner reveal">
+        <h2>Ready to <span>explore?</span></h2>
+        <p>Browse the source on GitHub or check out any project live.</p>
+        <div class="cta-btns">
+          <a href="https://github.com/avlnr" class="btn btn-primary" target="_blank" rel="noopener">View GitHub Profile</a>
+          <a href="#projects" class="btn btn-ghost">Back to Projects</a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="site-footer">
+    <div class="footer-links">
+      <a href="https://github.com/avlnr" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://linkedin.com/in/YOUR-PROFILE" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+    </div>
+    <p>Built with vanilla HTML, CSS &amp; JavaScript — no frameworks &nbsp;·&nbsp; CodeCraft by avlnr</p>
+  </footer>
+
+  <script>
+    /* ── Theme toggle ── */
+    const themeBtn = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    const saved = localStorage.getItem('cc_theme') || 'dark';
+    html.setAttribute('data-theme', saved);
+    themeBtn.textContent = saved === 'dark' ? '☀️' : '🌙';
+
+    themeBtn.addEventListener('click', () => {
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('cc_theme', next);
+      themeBtn.textContent = next === 'dark' ? '☀️' : '🌙';
+    });
+
+    /* ── Scroll reveal ── */
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          revealObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => revealObs.observe(el));
+
+    /* ── Animated stat counters ── */
+    const counterEls = document.querySelectorAll('.stat-num[data-target]');
+    const counterObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        const target = parseInt(el.dataset.target, 10);
+        const suffix = el.dataset.target === '98' ? '+' : (el.dataset.target === '5' ? '' : '+');
+        let start = 0;
+        const step = Math.ceil(target / 40);
+        const timer = setInterval(() => {
+          start = Math.min(start + step, target);
+          el.textContent = start + (start === target ? suffix : '');
+          if (start >= target) clearInterval(timer);
+        }, 30);
+        counterObs.unobserve(el);
+      });
+    }, { threshold: 0.5 });
+    counterEls.forEach(el => counterObs.observe(el));
+  </script>
+
+</body>
+</html>

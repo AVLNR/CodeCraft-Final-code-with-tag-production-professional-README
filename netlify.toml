@@ -1,0 +1,97 @@
+# Netlify Deployment Configuration
+# Docs: https://docs.netlify.com/configure-builds/file-based-configuration/
+
+[build]
+  # Publish the repo root — all sub-project folders are served as-is
+  publish = "."
+
+  # No build command needed for a static vanilla JS project
+  # command = ""
+
+# ──────────────────────────────────────────────
+# Redirect Rules
+# ──────────────────────────────────────────────
+
+# Clean URL: /task-1  →  /Task 1/index.html
+[[redirects]]
+  from = "/task-1"
+  to   = "/Task 1/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/task-2"
+  to   = "/Task II/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/task-3"
+  to   = "/Task III/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/task-4"
+  to   = "/Task 4/index.html"
+  status = 200
+
+# Catch-all 404 fallback — serve the landing page
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 404
+
+# ──────────────────────────────────────────────
+# HTTP Headers
+# ──────────────────────────────────────────────
+
+# Security & performance headers for all routes
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options        = "DENY"
+    X-XSS-Protection       = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
+    Permissions-Policy     = "geolocation=(self), camera=(), microphone=()"
+
+# Aggressive caching for static assets (fonts, images, icons)
+[[headers]]
+  for = "*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.woff"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# JS and CSS — short cache with revalidation
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+# Service Worker — must never be cached so updates propagate immediately
+[[headers]]
+  for = "/Task 4/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"

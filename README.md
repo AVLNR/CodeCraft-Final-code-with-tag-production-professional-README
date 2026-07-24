@@ -9,7 +9,6 @@ A complete, production-ready portfolio of four interconnected web projects built
 
 ## Projects Overview
 
-| #https://avlnr.github.io/3-mini-apps-Weather-Movie-Quote-User-integrated-into-main-site/ | Project | Key Tech | Live Link |
 |---|---------|----------|-----------|
 | 1 | Aether Studio — Creative Agency Website | HTML5, CSS3, Vanilla JS | [View](https://avlnr.github.io/Aether-Studio/) |
 | 2 | JavaScript Showcase Hub — 12 UI Components | ES6+, CSS Variables, LocalStorage | [View](https://avlnr.github.io/Website-with-10-interactive-JS-components/) |

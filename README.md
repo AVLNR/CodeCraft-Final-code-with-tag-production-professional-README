@@ -10,9 +10,13 @@ A complete, production-ready portfolio of four interconnected web projects built
 ## Projects Overview
 
 |---|---------|----------|-----------|
+
 | 1 | Aether Studio — Creative Agency Website | HTML5, CSS3, Vanilla JS | [View](https://avlnr.github.io/Aether-Studio/) |
+
 | 2 | JavaScript Showcase Hub — 12 UI Components | ES6+, CSS Variables, LocalStorage | [View](https://avlnr.github.io/Website-with-10-interactive-JS-components/) |
+
 | 3 | API Studio — Interactive REST API Dashboard | Async/Await, Fetch, AbortController | [View]() |
+
 | 4 | Veloce — Advanced Expense Tracker PWA | IndexedDB, Service Workers, Chart.js | [View](https://avlnr.github.io/CRUD-app-Expense-Tracker-Notes-Recipe-advanced-features/) |
 
 ---
